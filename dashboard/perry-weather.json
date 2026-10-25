@@ -1,0 +1,763 @@
+[
+  {
+    "apiVersion": "influxdata.com/v2alpha1",
+    "kind": "Dashboard",
+    "metadata": {
+      "name": "perry-weather"
+    },
+    "spec": {
+      "name": "Perry weather",
+      "description": "Enviro Weather board: now, trends, derived values, board health",
+      "charts": [
+        {
+          "kind": "Single_Stat",
+          "name": "Temperature",
+          "queries": [
+            {
+              "query": "from(bucket: \"enviro\")\n  |> range(start: -24h)\n  |> filter(fn: (r) => r.device == \"perry\" and r._measurement == \"temperature\" and r._field == \"value\")\n  |> last()"
+            }
+          ],
+          "colors": [
+            {
+              "name": "base",
+              "type": "text",
+              "hex": "#31C0F6",
+              "value": 0
+            }
+          ],
+          "decimalPlaces": 1,
+          "suffix": " \u00b0C",
+          "prefix": "",
+          "xPos": 0,
+          "yPos": 0,
+          "width": 2,
+          "height": 3
+        },
+        {
+          "kind": "Single_Stat",
+          "name": "Humidity",
+          "queries": [
+            {
+              "query": "from(bucket: \"enviro\")\n  |> range(start: -24h)\n  |> filter(fn: (r) => r.device == \"perry\" and r._measurement == \"humidity\" and r._field == \"value\")\n  |> last()"
+            }
+          ],
+          "colors": [
+            {
+              "name": "base",
+              "type": "text",
+              "hex": "#31C0F6",
+              "value": 0
+            }
+          ],
+          "decimalPlaces": 0,
+          "suffix": " %",
+          "prefix": "",
+          "xPos": 2,
+          "yPos": 0,
+          "width": 2,
+          "height": 3
+        },
+        {
+          "kind": "Single_Stat",
+          "name": "Pressure",
+          "queries": [
+            {
+              "query": "from(bucket: \"enviro\")\n  |> range(start: -24h)\n  |> filter(fn: (r) => r.device == \"perry\" and r._measurement == \"pressure\" and r._field == \"value\")\n  |> last()"
+            }
+          ],
+          "colors": [
+            {
+              "name": "base",
+              "type": "text",
+              "hex": "#31C0F6",
+              "value": 0
+            }
+          ],
+          "decimalPlaces": 0,
+          "suffix": " hPa",
+          "prefix": "",
+          "xPos": 4,
+          "yPos": 0,
+          "width": 2,
+          "height": 3
+        },
+        {
+          "kind": "Single_Stat",
+          "name": "Wind",
+          "queries": [
+            {
+              "query": "from(bucket: \"enviro\")\n  |> range(start: -24h)\n  |> filter(fn: (r) => r.device == \"perry\" and r._measurement == \"wind_speed\" and r._field == \"value\")\n  |> last()"
+            }
+          ],
+          "colors": [
+            {
+              "name": "base",
+              "type": "text",
+              "hex": "#31C0F6",
+              "value": 0
+            }
+          ],
+          "decimalPlaces": 1,
+          "suffix": " m/s",
+          "prefix": "",
+          "xPos": 6,
+          "yPos": 0,
+          "width": 2,
+          "height": 3
+        },
+        {
+          "kind": "Single_Stat",
+          "name": "Wind from",
+          "queries": [
+            {
+              "query": "compass = [\"N\", \"NE\", \"E\", \"SE\", \"S\", \"SW\", \"W\", \"NW\"]\nfrom(bucket: \"enviro\")\n  |> range(start: -24h)\n  |> filter(fn: (r) => r.device == \"perry\" and r._measurement == \"wind_direction\" and r._field == \"value\")\n  |> last()\n  |> map(fn: (r) => ({_time: r._time, _value: compass[int(v: (r._value + 22.5) / 45.0) % 8]}))"
+            }
+          ],
+          "colors": [
+            {
+              "name": "base",
+              "type": "text",
+              "hex": "#31C0F6",
+              "value": 0
+            }
+          ],
+          "decimalPlaces": 0,
+          "suffix": "",
+          "prefix": "",
+          "xPos": 8,
+          "yPos": 0,
+          "width": 2,
+          "height": 3
+        },
+        {
+          "kind": "Single_Stat",
+          "name": "Rain, 24 h",
+          "queries": [
+            {
+              "query": "from(bucket: \"enviro\")\n  |> range(start: -24h)\n  |> filter(fn: (r) => r.device == \"perry\" and r._measurement == \"rain\" and r._field == \"value\")\n  |> sum()"
+            }
+          ],
+          "colors": [
+            {
+              "name": "base",
+              "type": "text",
+              "hex": "#31C0F6",
+              "value": 0
+            }
+          ],
+          "decimalPlaces": 1,
+          "suffix": " mm",
+          "prefix": "",
+          "xPos": 10,
+          "yPos": 0,
+          "width": 2,
+          "height": 3
+        },
+        {
+          "kind": "Single_Stat",
+          "name": "24 h high",
+          "queries": [
+            {
+              "query": "from(bucket: \"enviro\")\n  |> range(start: -24h)\n  |> filter(fn: (r) => r.device == \"perry\" and r._measurement == \"temperature\" and r._field == \"value\")\n  |> max()"
+            }
+          ],
+          "colors": [
+            {
+              "name": "hi",
+              "type": "text",
+              "hex": "#FF7E27",
+              "value": 0
+            }
+          ],
+          "decimalPlaces": 1,
+          "suffix": " \u00b0C",
+          "prefix": "",
+          "xPos": 0,
+          "yPos": 3,
+          "width": 3,
+          "height": 2
+        },
+        {
+          "kind": "Single_Stat",
+          "name": "24 h low",
+          "queries": [
+            {
+              "query": "from(bucket: \"enviro\")\n  |> range(start: -24h)\n  |> filter(fn: (r) => r.device == \"perry\" and r._measurement == \"temperature\" and r._field == \"value\")\n  |> min()"
+            }
+          ],
+          "colors": [
+            {
+              "name": "lo",
+              "type": "text",
+              "hex": "#4591ED",
+              "value": 0
+            }
+          ],
+          "decimalPlaces": 1,
+          "suffix": " \u00b0C",
+          "prefix": "",
+          "xPos": 3,
+          "yPos": 3,
+          "width": 3,
+          "height": 2
+        },
+        {
+          "kind": "Single_Stat",
+          "name": "Last reading (min ago)",
+          "queries": [
+            {
+              "query": "from(bucket: \"enviro\")\n  |> range(start: -24h)\n  |> filter(fn: (r) => r.device == \"perry\" and r._measurement == \"temperature\" and r._field == \"value\")\n  |> last()\n  |> map(fn: (r) => ({_time: r._time, _value: float(v: int(v: now()) - int(v: r._time)) / 60000000000.0}))"
+            }
+          ],
+          "colors": [
+            {
+              "name": "base",
+              "type": "text",
+              "hex": "#7CE490",
+              "value": 0
+            },
+            {
+              "name": "t0",
+              "type": "text",
+              "hex": "#FFB94A",
+              "value": 35
+            },
+            {
+              "name": "t1",
+              "type": "text",
+              "hex": "#F95F53",
+              "value": 60
+            }
+          ],
+          "decimalPlaces": 0,
+          "suffix": " min",
+          "prefix": "",
+          "xPos": 6,
+          "yPos": 3,
+          "width": 3,
+          "height": 2
+        },
+        {
+          "kind": "Single_Stat",
+          "name": "Readings, last hour (7+ ok, 12 max)",
+          "queries": [
+            {
+              "query": "import \"array\"\n\nn = from(bucket: \"enviro\")\n  |> range(start: -1h)\n  |> filter(fn: (r) => r.device == \"perry\" and r._measurement == \"temperature\" and r._field == \"value\")\n  |> count()\n  |> group()\n\nunion(tables: [n, array.from(rows: [{_value: 0}])])\n  |> group()\n  |> sum()"
+            }
+          ],
+          "colors": [
+            {
+              "name": "base",
+              "type": "text",
+              "hex": "#F95F53",
+              "value": 0
+            },
+            {
+              "name": "t0",
+              "type": "text",
+              "hex": "#FFB94A",
+              "value": 4
+            },
+            {
+              "name": "t1",
+              "type": "text",
+              "hex": "#7CE490",
+              "value": 7
+            }
+          ],
+          "decimalPlaces": 0,
+          "suffix": "",
+          "prefix": "",
+          "xPos": 9,
+          "yPos": 3,
+          "width": 3,
+          "height": 2
+        },
+        {
+          "kind": "Single_Stat",
+          "name": "Battery",
+          "queries": [
+            {
+              "query": "from(bucket: \"enviro\")\n  |> range(start: -7d)\n  |> filter(fn: (r) => r.device == \"perry\" and r._measurement == \"voltage\" and r._field == \"value\")\n  |> last()"
+            }
+          ],
+          "colors": [
+            {
+              "name": "base",
+              "type": "text",
+              "hex": "#F95F53",
+              "value": 0
+            },
+            {
+              "name": "t0",
+              "type": "text",
+              "hex": "#FFB94A",
+              "value": 3.4
+            },
+            {
+              "name": "t1",
+              "type": "text",
+              "hex": "#7CE490",
+              "value": 4.0
+            }
+          ],
+          "decimalPlaces": 2,
+          "suffix": " V",
+          "prefix": "",
+          "xPos": 0,
+          "yPos": 5,
+          "width": 3,
+          "height": 4
+        },
+        {
+          "kind": "XY",
+          "name": "Battery voltage",
+          "queries": [
+            {
+              "query": "from(bucket: \"enviro\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r.device == \"perry\" and r._measurement == \"voltage\" and r._field == \"value\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")"
+            }
+          ],
+          "axes": [
+            {
+              "name": "x",
+              "label": "",
+              "base": "",
+              "scale": "linear"
+            },
+            {
+              "name": "y",
+              "label": "V",
+              "suffix": " V",
+              "base": "10",
+              "scale": "linear"
+            }
+          ],
+          "colors": [
+            {
+              "name": "a",
+              "type": "scale",
+              "hex": "#31C0F6"
+            },
+            {
+              "name": "b",
+              "type": "scale",
+              "hex": "#A500A5"
+            },
+            {
+              "name": "c",
+              "type": "scale",
+              "hex": "#FF7E27"
+            }
+          ],
+          "geom": "line",
+          "xCol": "_time",
+          "yCol": "_value",
+          "position": "overlaid",
+          "legendOpacity": 1.0,
+          "legendOrientationThreshold": 100000000,
+          "hoverDimension": "auto",
+          "shade": true,
+          "xPos": 3,
+          "yPos": 5,
+          "width": 9,
+          "height": 4
+        },
+        {
+          "kind": "XY",
+          "name": "Temperature & dew point",
+          "queries": [
+            {
+              "query": "import \"math\"\n\nbase = from(bucket: \"enviro\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r.device == \"perry\" and r._field == \"value\" and (r._measurement == \"temperature\" or r._measurement == \"humidity\"))\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> pivot(rowKey: [\"_time\"], columnKey: [\"_measurement\"], valueColumn: \"_value\")\n  |> filter(fn: (r) => exists r.temperature and exists r.humidity and r.humidity > 0.0)\n\ntemperature = base\n  |> map(fn: (r) => ({_time: r._time, _value: r.temperature, _field: \"temperature\"}))\n\n// Magnus approximation\ndew_point = base\n  |> map(fn: (r) => {\n    g = math.log(x: r.humidity / 100.0) + (17.625 * r.temperature) / (243.04 + r.temperature)\n    return {_time: r._time, _value: 243.04 * g / (17.625 - g), _field: \"dew point\"}\n  })\n\nunion(tables: [temperature, dew_point])\n  |> group(columns: [\"_field\"])\n  |> sort(columns: [\"_time\"])"
+            }
+          ],
+          "axes": [
+            {
+              "name": "x",
+              "label": "",
+              "base": "",
+              "scale": "linear"
+            },
+            {
+              "name": "y",
+              "label": "\u00b0C",
+              "suffix": " \u00b0C",
+              "base": "10",
+              "scale": "linear"
+            }
+          ],
+          "colors": [
+            {
+              "name": "a",
+              "type": "scale",
+              "hex": "#31C0F6"
+            },
+            {
+              "name": "b",
+              "type": "scale",
+              "hex": "#A500A5"
+            },
+            {
+              "name": "c",
+              "type": "scale",
+              "hex": "#FF7E27"
+            }
+          ],
+          "geom": "line",
+          "xCol": "_time",
+          "yCol": "_value",
+          "position": "overlaid",
+          "legendOpacity": 1.0,
+          "legendOrientationThreshold": 100000000,
+          "hoverDimension": "auto",
+          "shade": true,
+          "xPos": 0,
+          "yPos": 9,
+          "width": 8,
+          "height": 4
+        },
+        {
+          "kind": "XY",
+          "name": "Humidity",
+          "queries": [
+            {
+              "query": "from(bucket: \"enviro\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r.device == \"perry\" and r._measurement == \"humidity\" and r._field == \"value\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")"
+            }
+          ],
+          "axes": [
+            {
+              "name": "x",
+              "label": "",
+              "base": "",
+              "scale": "linear"
+            },
+            {
+              "name": "y",
+              "label": "%",
+              "suffix": " %",
+              "base": "10",
+              "scale": "linear"
+            }
+          ],
+          "colors": [
+            {
+              "name": "a",
+              "type": "scale",
+              "hex": "#31C0F6"
+            },
+            {
+              "name": "b",
+              "type": "scale",
+              "hex": "#A500A5"
+            },
+            {
+              "name": "c",
+              "type": "scale",
+              "hex": "#FF7E27"
+            }
+          ],
+          "geom": "line",
+          "xCol": "_time",
+          "yCol": "_value",
+          "position": "overlaid",
+          "legendOpacity": 1.0,
+          "legendOrientationThreshold": 100000000,
+          "hoverDimension": "auto",
+          "shade": true,
+          "xPos": 8,
+          "yPos": 9,
+          "width": 4,
+          "height": 4
+        },
+        {
+          "kind": "XY",
+          "name": "Pressure",
+          "queries": [
+            {
+              "query": "from(bucket: \"enviro\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r.device == \"perry\" and r._measurement == \"pressure\" and r._field == \"value\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")"
+            }
+          ],
+          "axes": [
+            {
+              "name": "x",
+              "label": "",
+              "base": "",
+              "scale": "linear"
+            },
+            {
+              "name": "y",
+              "label": "hPa",
+              "suffix": " hPa",
+              "base": "10",
+              "scale": "linear"
+            }
+          ],
+          "colors": [
+            {
+              "name": "a",
+              "type": "scale",
+              "hex": "#31C0F6"
+            },
+            {
+              "name": "b",
+              "type": "scale",
+              "hex": "#A500A5"
+            },
+            {
+              "name": "c",
+              "type": "scale",
+              "hex": "#FF7E27"
+            }
+          ],
+          "geom": "line",
+          "xCol": "_time",
+          "yCol": "_value",
+          "position": "overlaid",
+          "legendOpacity": 1.0,
+          "legendOrientationThreshold": 100000000,
+          "hoverDimension": "auto",
+          "shade": true,
+          "xPos": 0,
+          "yPos": 13,
+          "width": 6,
+          "height": 4
+        },
+        {
+          "kind": "XY",
+          "name": "Wind speed",
+          "queries": [
+            {
+              "query": "from(bucket: \"enviro\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r.device == \"perry\" and r._measurement == \"wind_speed\" and r._field == \"value\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> set(key: \"_field\", value: \"mean\")\n  |> yield(name: \"mean\")\n\nfrom(bucket: \"enviro\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r.device == \"perry\" and r._measurement == \"wind_speed\" and r._field == \"value\")\n  |> aggregateWindow(every: v.windowPeriod, fn: max, createEmpty: false)\n  |> set(key: \"_field\", value: \"gust (max)\")\n  |> yield(name: \"gust\")"
+            }
+          ],
+          "axes": [
+            {
+              "name": "x",
+              "label": "",
+              "base": "",
+              "scale": "linear"
+            },
+            {
+              "name": "y",
+              "label": "m/s",
+              "suffix": " m/s",
+              "base": "10",
+              "scale": "linear"
+            }
+          ],
+          "colors": [
+            {
+              "name": "a",
+              "type": "scale",
+              "hex": "#31C0F6"
+            },
+            {
+              "name": "b",
+              "type": "scale",
+              "hex": "#A500A5"
+            },
+            {
+              "name": "c",
+              "type": "scale",
+              "hex": "#FF7E27"
+            }
+          ],
+          "geom": "line",
+          "xCol": "_time",
+          "yCol": "_value",
+          "position": "overlaid",
+          "legendOpacity": 1.0,
+          "legendOrientationThreshold": 100000000,
+          "hoverDimension": "auto",
+          "shade": true,
+          "xPos": 6,
+          "yPos": 13,
+          "width": 6,
+          "height": 4
+        },
+        {
+          "kind": "XY",
+          "name": "Rain",
+          "queries": [
+            {
+              "query": "from(bucket: \"enviro\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r.device == \"perry\" and r._measurement == \"rain\" and r._field == \"value\")\n  |> aggregateWindow(every: if int(v: v.windowPeriod) < 3600000000000 then 1h else v.windowPeriod, fn: sum, createEmpty: false)\n  |> yield(name: \"rain\")"
+            }
+          ],
+          "axes": [
+            {
+              "name": "x",
+              "label": "",
+              "base": "",
+              "scale": "linear"
+            },
+            {
+              "name": "y",
+              "label": "mm",
+              "suffix": " mm",
+              "base": "10",
+              "scale": "linear"
+            }
+          ],
+          "colors": [
+            {
+              "name": "a",
+              "type": "scale",
+              "hex": "#31C0F6"
+            },
+            {
+              "name": "b",
+              "type": "scale",
+              "hex": "#A500A5"
+            },
+            {
+              "name": "c",
+              "type": "scale",
+              "hex": "#FF7E27"
+            }
+          ],
+          "geom": "bar",
+          "xCol": "_time",
+          "yCol": "_value",
+          "position": "overlaid",
+          "legendOpacity": 1.0,
+          "legendOrientationThreshold": 100000000,
+          "hoverDimension": "auto",
+          "shade": false,
+          "xPos": 0,
+          "yPos": 17,
+          "width": 6,
+          "height": 4
+        },
+        {
+          "kind": "XY",
+          "name": "Light",
+          "queries": [
+            {
+              "query": "from(bucket: \"enviro\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r.device == \"perry\" and r._measurement == \"luminance\" and r._field == \"value\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")"
+            }
+          ],
+          "axes": [
+            {
+              "name": "x",
+              "label": "",
+              "base": "",
+              "scale": "linear"
+            },
+            {
+              "name": "y",
+              "label": "lux",
+              "suffix": " lux",
+              "base": "10",
+              "scale": "linear"
+            }
+          ],
+          "colors": [
+            {
+              "name": "a",
+              "type": "scale",
+              "hex": "#31C0F6"
+            },
+            {
+              "name": "b",
+              "type": "scale",
+              "hex": "#A500A5"
+            },
+            {
+              "name": "c",
+              "type": "scale",
+              "hex": "#FF7E27"
+            }
+          ],
+          "geom": "line",
+          "xCol": "_time",
+          "yCol": "_value",
+          "position": "overlaid",
+          "legendOpacity": 1.0,
+          "legendOrientationThreshold": 100000000,
+          "hoverDimension": "auto",
+          "shade": true,
+          "xPos": 6,
+          "yPos": 17,
+          "width": 6,
+          "height": 4
+        },
+        {
+          "kind": "Table",
+          "name": "Wind direction mix",
+          "queries": [
+            {
+              "query": "sectors = [\"N\", \"NE\", \"E\", \"SE\", \"S\", \"SW\", \"W\", \"NW\"]\nfrom(bucket: \"enviro\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r.device == \"perry\" and r._measurement == \"wind_direction\" and r._field == \"value\")\n  |> map(fn: (r) => ({r with sector: sectors[int(v: (r._value + 22.5) / 45.0) % 8]}))\n  |> group(columns: [\"sector\"])\n  |> count()\n  |> group()\n  |> rename(columns: {_value: \"readings\"})\n  |> keep(columns: [\"sector\", \"readings\"])\n  |> sort(columns: [\"readings\"], desc: true)"
+            }
+          ],
+          "colors": [
+            {
+              "name": "base",
+              "type": "text",
+              "hex": "#31C0F6",
+              "value": 0
+            }
+          ],
+          "decimalPlaces": 0,
+          "tableOptions": {
+            "verticalTimeAxis": true,
+            "sortBy": "",
+            "wrapping": "",
+            "fixFirstColumn": false
+          },
+          "timeFormat": "YYYY-MM-DD HH:mm:ss",
+          "xPos": 0,
+          "yPos": 21,
+          "width": 4,
+          "height": 4
+        },
+        {
+          "kind": "XY",
+          "name": "Readings per hour (gaps = outages)",
+          "queries": [
+            {
+              "query": "from(bucket: \"enviro\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r.device == \"perry\" and r._measurement == \"temperature\" and r._field == \"value\")\n  |> aggregateWindow(every: 1h, fn: count, createEmpty: true)\n  |> map(fn: (r) => ({r with _value: if exists r._value then r._value else 0}))\n  |> yield(name: \"readings per hour\")"
+            }
+          ],
+          "axes": [
+            {
+              "name": "x",
+              "label": "",
+              "base": "",
+              "scale": "linear"
+            },
+            {
+              "name": "y",
+              "label": "readings",
+              "suffix": "",
+              "base": "10",
+              "scale": "linear"
+            }
+          ],
+          "colors": [
+            {
+              "name": "a",
+              "type": "scale",
+              "hex": "#31C0F6"
+            },
+            {
+              "name": "b",
+              "type": "scale",
+              "hex": "#31C0F6"
+            }
+          ],
+          "geom": "bar",
+          "xCol": "_time",
+          "yCol": "_value",
+          "position": "overlaid",
+          "legendOpacity": 1.0,
+          "legendOrientationThreshold": 100000000,
+          "hoverDimension": "auto",
+          "shade": false,
+          "xPos": 4,
+          "yPos": 21,
+          "width": 8,
+          "height": 4
+        }
+      ]
+    }
+  }
+]

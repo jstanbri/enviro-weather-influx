@@ -1,0 +1,11 @@
+.env
+config.py
+log.txt
+*:Zone.Identifier
+__pycache__/
+# runtime state on the board, not source
+board/uploads/
+board/last_time.txt
+board/sync_time.txt
+board/reattempt_upload.txt
+board/last_lux.txt
